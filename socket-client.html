@@ -1,0 +1,64 @@
+<script type="text/javascript">
+    function add(text) {
+        document.forms[0].b.value = text + "\n" + document.forms[0].b.value;
+    }
+
+    if ("WebSocket" in window) {
+        var timer;
+        var ws = new WebSocket("ws://yesno.hata.sale:1122");
+        ws.onopen = function () {
+            add('Connection opened');
+            var message = 'user_id=121111';
+            ws.send(message);
+            timer = window.setInterval(function () {
+                var date = new Date();
+                var message = '{"message": "sdfsdf sdfsdf", "user_id": 1, "phone" :375447554054, "user_name": "Vasiliy", "chat_id": 2, "members": "1,2"}';
+                ws.send(message);
+                add('Client sent message "' + message + '"');
+                var message = '{ "message": "PhotoKey", "photo_id": "3", "phone": "375296114632", "user_id": "1", "user_name": "Leva", "chat_id": "2", "members": "1,2"}';
+                ws.send(message);
+            }, 1500);
+        };
+
+        ws.onmessage = function (evt) {
+            //alert('111');
+            add('Message from server: "' + evt.data + '"');
+        };
+
+        ws.onclose = function () {
+            add('Connection closed');
+            window.clearTimeout(timer);
+        };
+    } else {
+        alert("Your browser doesn't support WebSocket");
+    }
+
+    // создать подключение
+    /*var socket = new WebSocket("ws://dev.forspo.com/api/socket/");
+
+    // отправить сообщение из формы publish
+    document.forms.publish.onsubmit = function() {
+      var outgoingMessage = this.message.value;
+
+      socket.send(outgoingMessage);
+      return false;
+    };
+
+    // обработчик входящих сообщений
+    socket.onmessage = function(event) {
+      var incomingMessage = event.data;
+      alert('111');
+      showMessage(incomingMessage);
+    };
+
+    // показать сообщение в div#subscribe
+    function showMessage(message) {
+      var messageElem = document.createElement('div');
+      messageElem.appendChild(document.createTextNode(message));
+      document.getElementById('subscribe').appendChild(messageElem);
+    }*/
+
+</script>
+<form>
+    <textarea name="b" style="width:100%;height:100%"/></textarea>
+</form>
