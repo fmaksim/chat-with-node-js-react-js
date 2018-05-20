@@ -12,10 +12,12 @@ export default class LoginForm extends Component {
     }
 
     setUser = ({user, isUser})=> {
+        console.log(user, isUser);
         if (isUser) {
             this.setError("User name taken");
         } else {
             this.props.setUser(user);
+            this.setError("");
         }
     }
 
