@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
-import SideBar from './Sidebar'
+import SideBar from './Sidebar';
 
-import {User} from '../../Objects'
-import Messages from '../chats/Messages'
-import MessageInput from '../chats/MessageInput'
-import ChatHeading from './ChatHeading'
+import {User} from '../../Objects';
+import Messages from '../chats/Messages';
+import MessageInput from '../chats/MessageInput';
+import ChatHeading from './ChatHeading';
+import {MESSAGE_SENT, COMMUNITY_CHAT, MESSAGE_RECIEVED} from '../../Events';
 
 export default class ChatContainer extends Component {
 
@@ -20,31 +21,65 @@ export default class ChatContainer extends Component {
         };
     }
 
+    sendMessage = (chatId, message) => {
+        const {socket} = this.props;
+        socket.emit(MESSAGE_SENT, {chatId, message});
+    }
+    updateChatList = (chat) => {
+        this.addChat(chat, true);
+    }
+
     setActiveChat = (activeChat) => {
         this.setState({activeChat});
+    }
+    addChat = (chat, reset) => {
+        const {socket} = this.props;
+        const {chats} = this.state;
+
+        const newChatsList = reset === true ? [chat] : [...chats, chat];
+        this.setState({chats: newChatsList, activeChat: chat});
+
+        const newMessageEvent = `${MESSAGE_RECIEVED}-${chat.id}`;
+        socket.on(newMessageEvent, this.addMessageToChat(chat.id));
+
+    }
+    addMessageToChat = (chatId) => {
+        return message => {
+            const {chats} = this.state;
+            let newChatsList = chats.map(
+                (chat) => {
+                    if (chat.id === chatId)
+                        chat.messages.push(message);
+
+                    return chat;
+                }
+            );
+            this.setState({chats: newChatsList});
+        }
     }
 
     componentWillUnmount() {
         this.deinitialize()
     }
 
+    componentDidMount() {
+        const {socket} = this.props
+        this.initSocket();
+        socket.emit(COMMUNITY_CHAT, this.updateChatList);
+    }
+
     /*
     *	Initializes the socket.
     */
     initSocket() {
-        const {socket} = this.props
+        const {socket} = this.props;
         socket.on('connect', () => {
         })
     }
 
-    componentDidMount() {
-        //const {socket} = this.props
-        this.initSocket()
-    }
-
     render() {
         const {user} = this.props
-        const {activeChat, chats} = this.state
+        const {activeChat, chats} = this.state;
         return (
             <div className="container">
                 <SideBar
@@ -66,7 +101,11 @@ export default class ChatContainer extends Component {
                                         user={user}
                                     />
 
-                                    <MessageInput/>
+                                    <MessageInput
+                                        sendMessage={(message) => {
+                                            this.sendMessage(activeChat.id, message);
+                                        }}
+                                    />
                                 </div>
                             )
                             :

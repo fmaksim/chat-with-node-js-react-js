@@ -6,8 +6,8 @@ export default class MessageInput extends Component {
         super(props);
 
         this.state = {message: "", isTyping: false};
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.sendMessage = this.sendMessage.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
     }
 
     /*
@@ -15,9 +15,9 @@ export default class MessageInput extends Component {
     *	@param e {Event} onsubmit event
     */
     handleSubmit(e) {
-        e.preventDefault()
-        this.sendMessage()
-        this.setState({message: ""})
+        e.preventDefault();
+        this.sendMessage();
+        this.setState({message: ""});
     }
 
     /*
@@ -25,12 +25,12 @@ export default class MessageInput extends Component {
     */
     sendMessage() {
 
-        this.props.sendMessage(this.state.message)
-        this.blur()
+        this.props.sendMessage(this.state.message);
+        this.blur();
     }
 
     render() {
-        const {message} = this.state
+        const {message} = this.state;
         return (
             <div className="message-input">
                 <form
