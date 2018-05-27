@@ -20,9 +20,8 @@ export default class ChatContainer extends Component {
         };
     }
 
-    componentDidMount() {
-        const {socket} = this.props
-        this.initSocket()
+    setActiveChat = (activeChat) => {
+        this.setState({activeChat});
     }
 
     componentWillUnmount() {
@@ -38,6 +37,11 @@ export default class ChatContainer extends Component {
         })
     }
 
+    componentDidMount() {
+        //const {socket} = this.props
+        this.initSocket()
+    }
+
     render() {
         const {user} = this.props
         const {activeChat, chats} = this.state
@@ -47,6 +51,7 @@ export default class ChatContainer extends Component {
                     chats={chats}
                     user={user}
                     activeChat={activeChat}
+                    setActiveChat={this.setActiveChat}
                 />
 
                 <div className="chat-room-container">

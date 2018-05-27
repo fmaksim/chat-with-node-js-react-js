@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import FASearch from 'react-icons/lib/fa/search'
+import FASearch from 'react-icons/lib/fa/search';
+import MdEject from 'react-icons/lib/md/eject';
 
 export default class SideBar extends Component {
     render() {
-        const {chats, activeChat, user} = this.props
+        const {chats, activeChat, user, logout, setActiveChat} = this.props;
         return (
             <div id="side-bar">
                 <div className="heading">
@@ -16,10 +17,10 @@ export default class SideBar extends Component {
                 </div>
                 <div
                     className="users"
+                    ref="users"
                     onClick={(e) => {
                         (e.target === this.refs.user) && setActiveChat(null)
                     }}>
-                    {console.log(chats)}
                     {
                         chats.map((chat) => {
                             if (chat.name) {
@@ -31,8 +32,7 @@ export default class SideBar extends Component {
                                         className={`user ${classNames}`}
                                         onClick={() => {
                                             setActiveChat(chat)
-                                        }}
-                                    >
+                                        }}>
                                         <div className="user-photo">{chat.name[0].toUpperCase()}</div>
                                         <div className="user-info">
                                             <div className="name">{chat.name}</div>
@@ -50,6 +50,9 @@ export default class SideBar extends Component {
                 </div>
                 <div className="current-user">
                     <span>{user.name}</span>
+                    <div onClick={logout()} title="Logout" className="logout">
+                        <MdEject/>
+                    </div>
                 </div>
             </div>
         );

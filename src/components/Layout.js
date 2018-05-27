@@ -4,7 +4,7 @@ import {USER_CONNECTED, USER_DISCONNECTED} from '../Events';
 import LoginForm from '../components/LoginForm';
 import ChatContainer from '../components/chats/ChatContainer';
 
-const socketUrl = "";
+const socketUrl = "http://192.168.1.3:3333/";
 
 export default class Layout extends Component {
 
@@ -46,7 +46,7 @@ export default class Layout extends Component {
             <div className="container">
                 {
                     user ?
-                        <ChatContainer socket={socket} user={user}/>
+                        <ChatContainer socket={socket} user={user} logout={this.logout}/>
                         :
                         <LoginForm socket={socket} setUser={this.setUser}/>
                 }
