@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
 import SideBar from './Sidebar';
-
 import {User} from '../../Objects';
 import Messages from '../chats/Messages';
 import MessageInput from '../chats/MessageInput';
@@ -59,7 +57,7 @@ export default class ChatContainer extends Component {
     }
 
     componentWillUnmount() {
-        this.deinitialize()
+        //this.deinitialize()
     }
 
     componentDidMount() {
@@ -78,13 +76,14 @@ export default class ChatContainer extends Component {
     }
 
     render() {
-        const {user} = this.props
+        const {user, logout} = this.props
         const {activeChat, chats} = this.state;
         return (
             <div className="container">
                 <SideBar
                     chats={chats}
                     user={user}
+                    logout={logout}
                     activeChat={activeChat}
                     setActiveChat={this.setActiveChat}
                 />

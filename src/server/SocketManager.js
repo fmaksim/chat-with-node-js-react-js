@@ -4,7 +4,8 @@ const io = require('./index').io
 const {
     VERIFY_USER,
     USER_CONNECTED,
-    USER_DISCONNECTED
+    USER_DISCONNECTED,
+    LOGOUT
 } = require('../Events');
 
 const {createUser, createChat, createMessage} = require('../Objects');
@@ -22,12 +23,23 @@ module.exports = function (socket) {
     });
 
     socket.on(USER_CONNECTED, (user) => {
+
         connectedUsers = addUser(connectedUsers, user);
         socket.user = user;
         io.emit(USER_CONNECTED, connectedUsers);
 
-        console.log(connectedUsers);
+    });
 
+    socket.on('disconnect', () => {
+        if ('user' in socket) {
+            connectedUsers = removeUser(connectedUsers, socket.user.name);
+            io.emit(USER_DISCONNECTED, connectedUsers);
+        }
+    });
+
+    socket.on(LOGOUT, () => {
+        connectedUsers = removeUser(connectedUsers, socket.user.name);
+        io.emit(USER_DISCONNECTED, connectedUsers);
     });
 
 }
@@ -40,7 +52,7 @@ function addUser(userList, user) {
     let newList = Object.assign({}, userList);
     newList[user.name] = user;
 
-    return userList;
+    return newList;
 }
 
 function removeUser(userList, username) {
