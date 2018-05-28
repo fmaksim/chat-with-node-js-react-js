@@ -7,11 +7,13 @@ const {
     USER_DISCONNECTED,
     LOGOUT,
     MESSAGE_SENT,
-    MESSAGE_RECIEVED
+    MESSAGE_RECIEVED,
+    DEFAULT_CHAT
 } = require('../Events');
 
 const {createUser, createChat, createMessage} = require('../Objects');
 let connectedUsers = {};
+let defaultChat = createChat();
 
 module.exports = function (socket) {
     console.log('Socket ID:' + socket.id);
@@ -51,6 +53,9 @@ module.exports = function (socket) {
         sendMessageToChat(chatId, message);
     });
 
+    socket.on(DEFAULT_CHAT, (callback) => {
+        callback(defaultChat);
+    });
 
 }
 

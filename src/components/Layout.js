@@ -38,8 +38,8 @@ export default class Layout extends Component {
             socket: null,
             user: null
         };
-        this.setUser = this.setUser.bind(this)
-        this.logout = this.logout.bind(this)
+        this.setUser = this.setUser.bind(this);
+        this.logout = this.logout.bind(this);
     }
 
     render() {

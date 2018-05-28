@@ -26,7 +26,7 @@ export default class MessageInput extends Component {
     sendMessage() {
 
         this.props.sendMessage(this.state.message);
-        this.blur();
+        //this.blur();
     }
 
     render() {
@@ -43,7 +43,9 @@ export default class MessageInput extends Component {
                         type="text"
                         className="form-control"
                         value={message}
-
+                        onChange={({target}) => {
+                            this.setState({message: target.value});
+                        }}
                         autoComplete={'off'}
                         placeholder="Please, enter your message"
                     />

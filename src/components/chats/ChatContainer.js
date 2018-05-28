@@ -5,23 +5,23 @@ import {User} from '../../Objects';
 import Messages from '../chats/Messages';
 import MessageInput from '../chats/MessageInput';
 import ChatHeading from './ChatHeading';
-import {MESSAGE_SENT, COMMUNITY_CHAT, MESSAGE_RECIEVED} from '../../Events';
+import {MESSAGE_SENT, DEFAULT_CHAT, MESSAGE_RECIEVED} from '../../Events';
 
 export default class ChatContainer extends Component {
+
+    sendMessage = (chatId, message) => {
+        const {socket} = this.props;
+        socket.emit(MESSAGE_SENT, chatId, message);
+    }
 
     constructor(props) {
         super(props);
 
         this.state = {
             activeChat: null,
-            communityChat: null,
+            defaultChat: null,
             chats: [],
         };
-    }
-
-    sendMessage = (chatId, message) => {
-        const {socket} = this.props;
-        socket.emit(MESSAGE_SENT, {chatId, message});
     }
     updateChatList = (chat) => {
         this.addChat(chat, true);
@@ -63,7 +63,7 @@ export default class ChatContainer extends Component {
     componentDidMount() {
         const {socket} = this.props
         this.initSocket();
-        socket.emit(COMMUNITY_CHAT, this.updateChatList);
+        socket.emit(DEFAULT_CHAT, this.updateChatList);
     }
 
     /*
