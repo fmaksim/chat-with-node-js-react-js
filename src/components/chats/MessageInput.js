@@ -5,9 +5,16 @@ export default class MessageInput extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {message: "", isTyping: false};
+        this.state = {
+            message: "",
+            isTyping: false
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+    }
+
+    componentWillUnmount() {
+        this.stopCheckingTyping();
     }
 
     /*
@@ -29,6 +36,33 @@ export default class MessageInput extends Component {
         //this.blur();
     }
 
+    sendTyping() {
+        this.lastTypingTime = Date.now();
+        if (!this.state.isTyping) {
+            console.log("Typing ...");
+            this.setState({isTyping: true});
+            this.props.sendTyping(true);
+            this.startCheckingTyping();
+        }
+    }
+
+    startCheckingTyping() {
+        this.typingInterval = setInterval(() => {
+            if (Date.now() - this.lastTypingTime > 200) {
+                this.setState({isTyping: false});
+                this.stopCheckingTyping();
+            }
+        }, 200);
+    }
+
+    stopCheckingTyping() {
+        if (this.typingInterval) {
+            console.log("Stop Typing ...");
+            clearInterval(this.typingInterval);
+            this.props.sendTyping(false);
+        }
+    }
+
     render() {
         const {message} = this.state;
         return (
@@ -45,6 +79,9 @@ export default class MessageInput extends Component {
                         value={message}
                         onChange={({target}) => {
                             this.setState({message: target.value});
+                        }}
+                        onKeyUp={(e) => {
+                            e.keyCode !== 13 && this.sendTyping()
                         }}
                         autoComplete={'off'}
                         placeholder="Please, enter your message"

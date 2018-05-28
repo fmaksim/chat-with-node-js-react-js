@@ -8,7 +8,8 @@ const {
     LOGOUT,
     MESSAGE_SENT,
     MESSAGE_RECIEVED,
-    DEFAULT_CHAT
+    DEFAULT_CHAT,
+    TYPING
 } = require('../Events');
 
 const {createUser, createChat, createMessage} = require('../Objects');
@@ -19,6 +20,7 @@ module.exports = function (socket) {
     console.log('Socket ID:' + socket.id);
 
     let sendMessageToChat;
+    let sendTypingToChat;
 
     socket.on(VERIFY_USER, (nickname, callback) => {
         if (isUser(connectedUsers, nickname)) {
@@ -33,6 +35,8 @@ module.exports = function (socket) {
         connectedUsers = addUser(connectedUsers, user);
         socket.user = user;
         sendMessageToChat = sendMessageToChatMembers(user.name);
+        sendTypingToChat = sendTypingToChatMembers(user.name);
+
         io.emit(USER_CONNECTED, connectedUsers);
 
     });
@@ -57,6 +61,16 @@ module.exports = function (socket) {
         callback(defaultChat);
     });
 
+    socket.on(TYPING, (chatId, isTyping) => {
+        sendTypingToChat(chatId, isTyping);
+    });
+
+}
+
+function sendTypingToChatMembers(user) {
+    return (chatId, isTyping) => {
+        io.emit(`${TYPING}-${chatId}`, {user, isTyping});
+    }
 }
 
 function sendMessageToChatMembers(sender) {
